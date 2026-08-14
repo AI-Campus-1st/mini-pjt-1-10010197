@@ -13,22 +13,33 @@ USE toilet_db;
 
 DROP TABLE IF EXISTS tb_toilet, tb_population;
 
- -- Base 테이블: 화장실 (원자 단위 = 화장실 하나하나)
-CREATE TABLE toilet (
-    toilet_id      VARCHAR(50) PRIMARY KEY,   -- 화장실 고유번호
-    sigungu        VARCHAR(30) NOT NULL,      -- 주소(구까지), FK 역할
-    male_seats     INTEGER,                   -- 남 총변기수
-    female_seats   INTEGER                    -- 여 총변기수
-);
---has_diaper_table INTEGER
+
 -- Join 테이블: 인구 (이미 시군구 단위로 집계된 데이터)
-CREATE TABLE population (
-    sigungu        VARCHAR(30) PRIMARY KEY,   -- 주소(구까지)
-    male_pop       INTEGER,
-    female_pop     INTEGER
-);
+CREATE TABLE tb_population (
+    sigungu      VARCHAR(30) PRIMARY KEY,
+    sido         VARCHAR(20) NOT NULL,
+    male_pop     INT NOT NULL DEFAULT 0,
+    female_pop   INT NOT NULL DEFAULT 0,
+    total_pop    INT NOT NULL DEFAULT 0,
+    elderly_pop  INT NOT NULL DEFAULT 0,
+    child_pop    INT NOT NULL DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+ -- Base 테이블: 화장실 (원자 단위 = 화장실 하나하나)
+CREATE TABLE tb_toilet (
+    toilet_id         VARCHAR(30) PRIMARY KEY,
+    sigungu           VARCHAR(30) NOT NULL,
+    male_seats        INT NOT NULL DEFAULT 0,
+    female_seats      INT NOT NULL DEFAULT 0,
+    disabled_seats    INT NOT NULL DEFAULT 0,
+    child_seats       INT NOT NULL DEFAULT 0,
+    total_seats       INT NOT NULL DEFAULT 0,
+    has_diaper_table  TINYINT(1) NOT NULL,
+    INDEX idx_toilet_sigungu (sigungu),
+    CONSTRAINT fk_toilet_sigungu
+        FOREIGN KEY (sigungu) REFERENCES population(sigungu)
+        ON UPDATE CASCADE
+        ON DELETE RESTRICT
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-
-CREATE INDEX idx_store_region   ON store(region_code);
-CREATE INDEX idx_store_category ON store(category_l, category_m);
+CREATE INDEX idx_toilet_sigungu ON tb_toilet(sigungu);
 
