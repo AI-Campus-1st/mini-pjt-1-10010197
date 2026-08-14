@@ -13,25 +13,22 @@ USE toilet_db;
 
 DROP TABLE IF EXISTS tb_toilet, tb_population;
 
- 
--- 사실 테이블 (Base 데이터)
+ -- Base 테이블: 화장실 (원자 단위 = 화장실 하나하나)
 CREATE TABLE toilet (
-    store_id      TEXT PRIMARY KEY,
-    name          TEXT,
-    category_l    TEXT,
-    category_m    TEXT,
-    region_code   TEXT REFERENCES region(region_code),
-    lon           REAL,
-    lat           REAL
+    toilet_id      VARCHAR(50) PRIMARY KEY,   -- 화장실 고유번호
+    sigungu        VARCHAR(30) NOT NULL,      -- 주소(구까지), FK 역할
+    male_seats     INTEGER,                   -- 남 총변기수
+    female_seats   INTEGER                    -- 여 총변기수
 );
+--has_diaper_table INTEGER
+-- Join 테이블: 인구 (이미 시군구 단위로 집계된 데이터)
+CREATE TABLE population (
+    sigungu        VARCHAR(30) PRIMARY KEY,   -- 주소(구까지)
+    male_pop       INTEGER,
+    female_pop     INTEGER
+);
+
+
 CREATE INDEX idx_store_region   ON store(region_code);
 CREATE INDEX idx_store_category ON store(category_l, category_m);
 
-
--- 연결 데이터 (인구 등)
-CREATE TABLE population (
-    region_code   TEXT REFERENCES region(region_code),
-    base_ym       TEXT,               -- 기준연월 'YYYY-MM'
-    total_pop     INTEGER,
-    household     INTEGER,
-    PRIMARY KEY (region_code, base_ym)
