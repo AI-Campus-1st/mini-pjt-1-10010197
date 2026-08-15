@@ -26,6 +26,7 @@ CREATE TABLE tb_population (
 
     PRIMARY KEY (sido, sigungu)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
  -- Base 테이블: 화장실 (원자 단위 = 화장실 하나하나)
 CREATE TABLE tb_toilet (
     toilet_id         VARCHAR(30) PRIMARY KEY,
