@@ -50,6 +50,22 @@ GROUP BY t.sido, t.sigungu, p.total_pop
 ORDER BY seats_per_10k DESC;
 
 
+-- 가설 2. 
+
+SELECT
+    t.sido,
+    t.sigungu,
+    COUNT(*) AS toilet_count,
+    SUM(t.total_seats) AS total_seats,
+    ROUND(SUM(t.total_seats) * 1.0 / COUNT(*), 2) AS avg_seats_per_toilet
+FROM tb_toilet t
+GROUP BY t.sido, t.sigungu
+HAVING COUNT(*) >= 10
+ORDER BY avg_seats_per_toilet DESC;
+
+
+
+
 ----------------------------------------------
 -- 하위 가설 1: 고령인구 비율이 높은 지역일수록 장애인용 변기 비율도 높은가?
 SELECT
